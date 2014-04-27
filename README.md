@@ -41,13 +41,84 @@ This plugin is a work in progress, meaning some template tags may have been over
 
 Bear in mind that some template tags are harder than others to alter. Particularly `comment_form()`, which directly outputs predefined class names to the browser without exposing any hooks to change its behaviour. That was a fun one to override.
 
-In the list below, I've documented each and every function that this plugin will affect.
+##Usage
 
-##Supported template tags
+The best way to use this plugin is install it and have a look at the code being output. Specific implementation details can be found below.
 
-	wp_nav_menu()
-	comment_form()
-	body_class()
-	post_class()
-	wp_list_categories()
+###Navigation menus
+
+####`wp_nav_menu()`
+
+By default, the `menu_class` parameter passed to this function will be used as the block name. This may not always be desirable, especially when passing multiple class names. For this reason you can override this behaviour by using the special `wpbem_block` argument as well.
+
+Both of these examples will prefix all menu items with `main-menu__`.
+
+	<?php
 	
+	wp_nav_menu(array(
+		'theme_location' => 'main',
+		'menu_class'     => 'main-menu',
+	));
+	
+	wp_nav_menu(array(
+		'theme_location' => 'main',
+		'menu_class'     => 'main-menu  nav  list',
+		'wpbem_block'    => 'main-menu',
+	));
+
+This function will fall back to `wp_page_menu()` if `theme_location` is not specified or is non-existent. See the next section for details.
+
+The following class names can be generated – assuming the block name `main-menu` is passed:
+
+	main-menu__item
+	main-menu__item--42 // where 42 is the post's ID
+	main-menu__item--page // where page is the post type
+	main-menu__item--current
+	main-menu__item--parent
+	main-menu__item--ancestor
+	main-menu__item--home
+	main-menu__item--has-children
+
+####`wp_page_menu()` and `wp_list_pages()`
+
+As with `wp_nav_menu()`, the block name can be specified using either `menu_class` or `wpbem_block` in the `$args` array.
+
+Assuming a block name of `page-menu`, the following possible class names exist:
+
+	page-menu__item
+	page-menu__item--page-42 // where 42 is the page's ID
+	page-menu__item--depth-0
+	page-menu__item--current
+	page-menu__item--has-children
+
+####`body_class()`
+
+This plugin will simply prefix all class names with `body--`. This block name can be overridden using the `wpbem_body_block` filter.
+
+####`post_class()`
+
+This plugin will simply prefix all class names with `post--`. This block name can be overridden using the `wpbem_post_block` filter.
+
+####`comment_form()`
+
+As WordPress doesn't expose any filters when generating comment form class names, the whole form has to be captured and parsed using PHP's DomDocument library, amending the markup on-the-fly. It's not an ideal solution but I've never been a fan of the default class names, so I thought it was important to include this feature anyway.
+
+Hopefully in a future release of WordPress the default comment form template will be a bit more flexible and will allow me to revisit and simplify this feature.
+
+There are two configuration options that are available here to modify the block name for the form's container and the form itself. To change them, just use `add_filter()` to override `wpbem_comment_container_block` and `wpbem_comment_form_block`. For example:
+
+	add_filter('wpbem_comment_form_block', function() {
+		return 'new-class-here';
+	});
+
+Amending the default WordPress class names was a bit of a hack, so I've made it possible to disable this functionality altogether. Just paste this code into your theme's functions.php file to turn this off if it causes more problems than it solves.
+
+	add_filter('wpbem_amend_comment_form', '__return_false');
+
+I'll welcome any pull requests from developers who fancy implementing a complete rewrite of the search form markup. I'll do this myself someday otherwise.
+
+####`get_search_form()`
+
+This plugin doesn't touch the `get_search_form()` function for the same reasons the `comment_form()` modification was so painful (see previous section).
+
+This is an easy one to override yourself. Just creating a file called searchform.php in your theme directory will achieve this.
