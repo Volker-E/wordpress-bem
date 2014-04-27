@@ -33,7 +33,7 @@ if(!version_compare(PHP_VERSION, WPBEM_MIN_PHP_VERSION, '>=')) {
 	deactivate_plugins(plugin_basename(__FILE__));
 
 	wp_die(sprintf(
-		'<h1>Unable to activate plugin</h1><p>BEM for WordPress requires PHP version %s or later. You are currently running version %s.</p><p>This plugin has been deactivated.</p><a href="%s" class="button  button-large">Return to the plugins page</a>',
+		'<h1>Unable to activate plugin</h1><p>WordPress BEM requires PHP version %s or later. You are currently running version %s.</p><p>This plugin has been deactivated.</p><a href="%s" class="button  button-large">Return to the plugins page</a>',
 		WPBEM_MIN_PHP_VERSION,
 		PHP_VERSION,
 		esc_url(get_admin_url(null, 'plugins.php'))
