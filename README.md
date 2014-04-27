@@ -15,19 +15,16 @@ If you already use (or want to use) BEM notation in your WordPress projects but 
 	<?php
 	
 	// native WP template tag that generates HTML
-	
 	wp_nav_menu(array(
 		'theme_location' => 'header',
 		'menu_class'     => 'main-menu',
 	));
 	
 	// before BEM conversion
-	
 	<li class="menu-item current-menu-item menu-item-123">Home</li>
 	
 	// after
-	
-	<li class="main-menu__menu-item main-menu__menu-item--current main-menu__menu-item--123">Home</li>
+	<li class="main-menu__item main-menu__item--current main-menu__item--123">Home</li>
 
 ##Limitations & known issues
 
@@ -91,15 +88,15 @@ Assuming a block name of `page-menu`, the following possible class names exist:
 	page-menu__item--current
 	page-menu__item--has-children
 
-####`body_class()`
+###`body_class()`
 
 This plugin will simply prefix all class names with `body--`. This block name can be overridden using the `wpbem_body_block` filter.
 
-####`post_class()`
+###`post_class()`
 
 This plugin will simply prefix all class names with `post--`. This block name can be overridden using the `wpbem_post_block` filter.
 
-####`comment_form()`
+###`comment_form()`
 
 As WordPress doesn't expose any filters when generating comment form class names, the whole form has to be captured and parsed using PHP's DomDocument library, amending the markup on-the-fly. It's not an ideal solution but I've never been a fan of the default class names, so I thought it was important to include this feature anyway.
 
@@ -117,7 +114,7 @@ Amending the default WordPress class names was a bit of a hack, so I've made it 
 
 I'll welcome any pull requests from developers who fancy implementing a complete rewrite of the search form markup. I'll do this myself someday otherwise.
 
-####`get_search_form()`
+###`get_search_form()`
 
 This plugin doesn't touch the `get_search_form()` function for the same reasons the `comment_form()` modification was so painful (see previous section).
 
