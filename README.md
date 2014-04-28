@@ -124,7 +124,9 @@ This plugin doesn't touch the `get_search_form()` function for the same reasons 
 
 This is an easy one to override yourself. Just creating a file called searchform.php in your theme directory will achieve this.
 
-##Customisation
+##Customisation & configuration
+
+###Class names
 
 The Bem class generates all class names used by this plugin and allows the customisation of separators and formatting of blocks, elements and modifiers.
 
@@ -142,8 +144,19 @@ Code should be placed in your theme's functions.php file.
 		return strtoupper($block);
 	});
 
+###Hook priorities
+
+By default all actions and filters used by this plugin are added with priority 30. You may find that another plugin uses a higher priority hook which modifies WordPress BEM's behaviour.
+
+No need to panic, just use any of the following filters to change the priority of the hook:
+
+	wpbem_nav_menu_priority
+	wpbem_page_menu_priority
+	wpbem_body_class_priority
+	wpbem_post_class_priority
+	wpbem_comment_form_priority
+
 ##Todo
 
 - Implement a completely custom comment form containing more flexible markup.
-- Custom priorities for hooks to overcome any conflicts affecting the plugin.
 - More graceful handling of nested navigation menus, especially class names on child lists.

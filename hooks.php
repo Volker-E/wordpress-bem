@@ -33,7 +33,7 @@ add_filter('nav_menu_css_class', function($classes, $item, $args) {
 
 	return $classes;
 
-}, 10, 3);
+}, apply_filters('wpbem_nav_menu_priority', 30), 3);
 
 add_filter('page_css_class', function($class, $page, $depth, $args, $current_page) {
 
@@ -56,7 +56,7 @@ add_filter('page_css_class', function($class, $page, $depth, $args, $current_pag
 
 	return $classes;
 
-}, 10, 5);
+}, apply_filters('wpbem_page_menu_priority', 30), 5);
 
 add_filter('body_class', function($classes) {
 
@@ -68,7 +68,7 @@ add_filter('body_class', function($classes) {
 
 	return $classes;
 
-}, 10, 1);
+}, apply_filters('wpbem_body_class_priority', 30), 1);
 
 add_filter('post_class', function($classes) {
 
@@ -90,13 +90,13 @@ add_filter('post_class', function($classes) {
 
 	return $classes;
 
-}, 10, 1);
+}, apply_filters('wpbem_post_class_priority', 30), 1);
 
 if(apply_filters('wpbem_amend_comment_form', true)) {
 
 	add_action('comment_form_before', function() {
 		ob_start();
-	});
+	}, apply_filters('wpbem_comment_form_priority', 30));
 
 	add_action('comment_form_after', function() {
 
@@ -188,6 +188,6 @@ if(apply_filters('wpbem_amend_comment_form', true)) {
 
 		echo $dom->saveHTML($root);
 
-	});
+	}, apply_filters('wpbem_comment_form_priority', 30));
 
 }
