@@ -41,4 +41,5 @@ if(!version_compare(PHP_VERSION, WPBEM_MIN_PHP_VERSION, '>=')) {
 
 }
 
+require_once 'lib/Bem.php';
 require_once 'hooks.php';

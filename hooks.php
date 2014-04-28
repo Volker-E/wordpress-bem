@@ -2,32 +2,33 @@
 
 add_filter('nav_menu_css_class', function($classes, $item, $args) {
 
-	$root = sprintf('%s__item', isset($args->wpbem_block) ? $args->wpbem_block : $args->menu_class);
+	$block   = isset($args->wpbem_block) ? $args->wpbem_block : $args->menu_class;
+	$element = apply_filters('wpbem_nav_menu_element', 'item');
 
 	$classes = array();
 
-	$classes[] = $root;
-	$classes[] = sprintf('%s--%s', $root, $item->ID);
-	$classes[] = sprintf('%s--%s', $root, $item->object);
+	$classes[] = Bem::bem($block, $element);
+	$classes[] = Bem::bem($block, $element, $item->ID);
+	$classes[] = Bem::bem($block, $element, $item->object);
 
 	if($item->current) {
-		$classes[] = sprintf('%s--current', $root);
+		$classes[] = Bem::bem($block, $element, 'current');
 	}
 
 	if($item->current_item_ancestor) {
-		$classes[] = sprintf('%s--ancestor', $root);
+		$classes[] = Bem::bem($block, $element, 'ancestor');
 	}
 
 	if($item->current_item_parent) {
-		$classes[] = sprintf('%s--parent', $root);
+		$classes[] = Bem::bem($block, $element, 'parent');
 	}
-	
+
 	if(in_array('menu-item-has-children', $item->classes)) {
-		$classes[] = sprintf('%s--has-children', $root);
+		$classes[] = Bem::bem($block, $element, 'has-children');
 	}
-	
+
 	if(in_array('menu-item-home', $item->classes)) {
-		$classes[] = sprintf('%s--home', $root);
+		$classes[] = Bem::bem($block, $element, 'home');
 	}
 
 	return $classes;
@@ -36,24 +37,25 @@ add_filter('nav_menu_css_class', function($classes, $item, $args) {
 
 add_filter('page_css_class', function($class, $page, $depth, $args, $current_page) {
 
-	$root = sprintf('%s__item', isset($args['wpbem_block']) ? $args['wpbem_block'] : $args['menu_class']);
+	$block   = isset($args['wpbem_block']) ? $args['wpbem_block'] : $args['menu_class'];
+	$element = apply_filters('wpbem_page_menu_element', 'item');
 
 	$classes = array();
 
-	$classes[] = $root;
-	$classes[] = sprintf('%s--%s', $root, $page->ID);
-	$classes[] = sprintf('%s--%s', $root, $depth);
+	$classes[] = Bem::bem($block, $element);
+	$classes[] = Bem::bem($block, $element, 'page-' . $page->ID);
+	$classes[] = Bem::bem($block, $element, 'depth-' . $depth);
 
 	if($current_page == $page->ID) {
-		$classes[] = sprintf('%s--current', $root);
+		$classes[] = Bem::bem($block, $element, 'current');
 	}
-	
+
 	if(in_array('page_item_has_children', $class)) {
-		$classes[] = sprintf('%s--has-children', $root);
+		$classes[] = Bem::bem($block, $element, 'has-children');
 	}
 
 	return $classes;
-	
+
 }, 10, 5);
 
 add_filter('body_class', function($classes) {
@@ -61,7 +63,7 @@ add_filter('body_class', function($classes) {
 	$block = apply_filters('wpbem_body_block', 'body');
 
 	$classes = array_map(function($class) use($block) {
-		return sprintf('%s--%s', $block, $class);
+		return Bem::bm($block, $class);
 	}, $classes);
 
 	return $classes;
@@ -82,7 +84,7 @@ add_filter('post_class', function($classes) {
 			$class = substr($class, 5);
 		}
 
-		return sprintf('%s--%s', $block, $class);
+		return Bem::bm($block, $class);
 
 	}, $classes);
 
@@ -95,97 +97,97 @@ if(apply_filters('wpbem_amend_comment_form', true)) {
 	add_action('comment_form_before', function() {
 		ob_start();
 	});
-	
+
 	add_action('comment_form_after', function() {
-	
+
 		$container_class = apply_filters('wpbem_comment_container_block', 'comments');
 		$form_class      = apply_filters('wpbem_comment_form_block',      'comment-form');
-	
+
 		$form = ob_get_contents();
 		ob_end_clean();
-	
+
 		$dom = new DomDocument;
 		$dom->preserveWhiteSpace = false;
 		$dom->formatOutput = false;
-	
+
 		$dom->loadHTML($form);
-	
+
 		$root = $dom->getElementById('respond');
 		$root->setAttribute('class', $container_class);
-	
+
 		$title = $dom->getElementById('reply-title');
-		$title->setAttribute('class', sprintf('%s__title', $container_class));
-		$title->getElementsByTagName('a')->item(0)->setAttribute('class', sprintf('%s__cancel-link', $container_class));
-	
+		$title->setAttribute('class', Bem::bem($container_class, 'title'));
+		$title->getElementsByTagName('a')->item(0)->setAttribute('class', Bem::bem($container_class, 'cancel-link'));
+
 		$form = $dom->getElementById('commentform');
 		$form->setAttribute('class', $form_class);
-	
+
 		foreach($form->getElementsByTagName('p') as $p) {
-	
+
 			$current_class = $p->getAttribute('class');
-	
+
 			if('comment-form-' == substr($current_class, 0, 13)) {
-				$p->setAttribute('class', sprintf('%1$s__row  %1$s__row--%2$s', $form_class, substr($current_class, 13)));
+				$p->setAttribute('class', sprintf('%s %s', Bem::bem($form_class, 'row'), Bem::bem($form_class, 'row', substr($current_class, 13))));
 			}
-	
+
 		}
-	
+
 		foreach($form->getElementsByTagName('label') as $label) {
-			$label->setAttribute('class', sprintf('%s__label', $form_class));
+			$label->setAttribute('class', Bem::bem($form_class, 'label'));
 		}
-	
+
 		foreach($form->getElementsByTagName('span') as $span) {
 			if('required' == $span->getAttribute('class')) {
-				$span->setAttribute('class', sprintf('%s__required', $form_class));
+				$span->setAttribute('class', Bem::bem($form_class, 'required'));
 			}
 		}
-	
+
 		foreach($form->getElementsByTagName('input') as $input) {
-	
+
 			$input_classes = array();
-	
+
 			switch($input->getAttribute('type')) {
 				case 'hidden':
 					break;
 				case 'email':
-					$input_classes[] = sprintf('%s__input', $form_class);
-					$input_classes[] = sprintf('%s__input--email', $form_class);
+					$input_classes[] = Bem::bem($form_class, 'input');
+					$input_classes[] = Bem::bem($form_class, 'input', 'email');
 					break;
 				case 'url':
-					$input_classes[] = sprintf('%s__input', $form_class);
-					$input_classes[] = sprintf('%s__input--url', $form_class);
+					$input_classes[] = Bem::bem($form_class, 'input');
+					$input_classes[] = Bem::bem($form_class, 'input', 'url');
 					break;
 				case 'submit':
-					$input_classes[] = sprintf('%s__button', $form_class);
-					$input_classes[] = sprintf('%s__button--submit', $form_class);
+					$input_classes[] = Bem::bem($form_class, 'button');
+					$input_classes[] = Bem::bem($form_class, 'button', 'submit');
 					break;
 				case 'reset':
-					$input_classes[] = sprintf('%s__button', $form_class);
-					$input_classes[] = sprintf('%s__button--reset', $form_class);
+					$input_classes[] = Bem::bem($form_class, 'button');
+					$input_classes[] = Bem::bem($form_class, 'button', 'reset');
 					break;
 				case 'button':
-					$input_classes[] = sprintf('%s__button', $form_class);
+					$input_classes[] = Bem::bem($form_class, 'button');
 					break;
 				default:
-					$input_classes[] = sprintf('%s__input', $form_class);
-					$input_classes[] = sprintf('%s__input--text', $form_class);
+					$input_classes[] = Bem::bem($form_class, 'input');
+					$input_classes[] = Bem::bem($form_class, 'input', 'text');
 					break;
 			}
-	
+
 			$input->setAttribute('class', implode(' ', $input_classes));
-	
+
 		}
-	
+
 		if($textarea = $dom->getElementById('comment')) {
 			$textarea->setAttribute('class', implode(' ', array(
-				sprintf('%s__textarea', $form_class),
-				sprintf('%s__input--textarea', $form_class),
-				sprintf('%s__comments-box', $form_class),
+				Bem::bem($form_class, 'textarea'),
+				Bem::bem($form_class, 'input', 'textarea'),
+				Bem::bem($form_class, 'comments-box'),
 			)));
 		}
-	
+
 		echo $dom->saveHTML($root);
-	
+
 	});
 
 }

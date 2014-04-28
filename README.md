@@ -76,6 +76,8 @@ The following class names can be generated – assuming the block name `main-men
 	main-menu__item--home
 	main-menu__item--has-children
 
+To customise the element (in the above case, 'item'), please use the `wpbem_nav_menu_element` filter.
+
 ###`wp_page_menu()` and `wp_list_pages()`
 
 As with `wp_nav_menu()`, the block name can be specified using either `menu_class` or `wpbem_block` in the `$args` array.
@@ -87,6 +89,8 @@ Assuming a block name of `page-menu`, the following possible class names exist:
 	page-menu__item--depth-0 // where 0 denotes a root node
 	page-menu__item--current
 	page-menu__item--has-children
+
+To customise the element (in the above case, 'item'), please use the `wpbem_page_menu_element` filter.
 
 ###`body_class()`
 
@@ -120,9 +124,26 @@ This plugin doesn't touch the `get_search_form()` function for the same reasons 
 
 This is an easy one to override yourself. Just creating a file called searchform.php in your theme directory will achieve this.
 
+##Customisation
+
+The Bem class generates all class names used by this plugin and allows the customisation of separators and formatting of blocks, elements and modifiers.
+
+Code should be placed in your theme's functions.php file.
+
+	// customises the element prefix, default is __ (two underscores)
+	Bem::setElementPrefix($prefix);
+	
+	// customises the modifier prefix, default is -- (two hyphens)
+	Bem::setModifierPrefix($prefix);
+	
+	// adds an output filter to format blocks
+	// the first parameter can be either block, element or modifier
+	Bem::addFilter('block', function($block) {
+		return strtoupper($block);
+	});
+
 ##Todo
 
-- Allow custom formatting of class names to suit individual developer preferences. I see a lot of versions of BEM where block names are written in camelcase, for example. It would be nice to allow this.
 - Implement a completely custom comment form containing more flexible markup.
 - Custom priorities for hooks to overcome any conflicts affecting the plugin.
 - More graceful handling of nested navigation menus, especially class names on child lists.
