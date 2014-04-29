@@ -94,9 +94,7 @@ add_filter('post_class', function($classes) {
 
 if(apply_filters('wpbem_amend_comment_form', true)) {
 
-	add_action('comment_form_before', function() {
-		ob_start();
-	}, apply_filters('wpbem_comment_form_priority', 30));
+	add_action('comment_form_before', 'ob_start', apply_filters('wpbem_comment_form_priority', 30));
 
 	add_action('comment_form_after', function() {
 
@@ -127,7 +125,11 @@ if(apply_filters('wpbem_amend_comment_form', true)) {
 			$current_class = $p->getAttribute('class');
 
 			if('comment-form-' == substr($current_class, 0, 13)) {
-				$p->setAttribute('class', sprintf('%s %s', Bem::bem($form_class, 'row'), Bem::bem($form_class, 'row', substr($current_class, 13))));
+				$p->setAttribute('class', sprintf(
+					'%s %s',
+					Bem::bem($form_class, 'row'),
+					Bem::bem($form_class, 'row', substr($current_class, 13))
+				));
 			}
 
 		}
