@@ -9,6 +9,15 @@ class BemText extends PHPUnit_Framework_TestCase
 		Bem::restoreDefaults();
 	}
 
+	public function testGetters()
+	{
+		$bem = new Bem('menu', 'item', 'active');
+
+		$this->assertEquals($bem->getBlock(), 'menu');
+		$this->assertEquals($bem->getElement(), 'item');
+		$this->assertEquals($bem->getModifier(), 'active');
+	}
+
 	public function testDefaultClassNameGeneration()
 	{
 		$bem = new Bem('menu', 'item', 'active');
