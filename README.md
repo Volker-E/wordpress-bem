@@ -1,6 +1,6 @@
 #WordPress BEM
 
-A plugin that hooks into natively generated WordPress template code and converts class names to block__element--modifier (BEM) notation.
+A plugin that hooks into natively generated WordPress template code and converts class names to `block__element--modifier` (BEM) notation.
 
 ##What is BEM?
 
@@ -12,6 +12,7 @@ If you use (or want to use) BEM notation in your WordPress projects but are put 
 
 ##Examples
 
+```php
 	<?php
 	
 	// native WP template tag that generates HTML
@@ -25,6 +26,7 @@ If you use (or want to use) BEM notation in your WordPress projects but are put 
 	
 	// after
 	<li class="main-menu__item main-menu__item--current main-menu__item--123">Home</li>
+```
 
 ##Limitations & known issues
 
