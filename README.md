@@ -13,19 +13,19 @@ If you use (or want to use) BEM notation in your WordPress projects but are put 
 ##Examples
 
 ```php
-	<?php
+<?php
 	
-	// native WP template tag that generates HTML
-	wp_nav_menu(array(
-		'theme_location' => 'header',
-		'menu_class'     => 'main-menu',
-	));
+// native WP template tag that generates HTML
+wp_nav_menu(array(
+	'theme_location' => 'header',
+	'menu_class'     => 'main-menu',
+));
 	
-	// before BEM conversion
-	<li class="menu-item current-menu-item menu-item-123">Home</li>
+// before BEM conversion
+<li class="menu-item current-menu-item menu-item-123">Home</li>
 	
-	// after
-	<li class="main-menu__item main-menu__item--current main-menu__item--123">Home</li>
+// after
+<li class="main-menu__item main-menu__item--current main-menu__item--123">Home</li>
 ```
 
 ##Limitations & known issues
@@ -52,31 +52,35 @@ By default, the `menu_class` parameter passed to this function will be used as t
 
 Both of these examples will prefix all menu items with `main-menu__`.
 
-	<?php
+```php
+<?php
 	
-	wp_nav_menu(array(
-		'theme_location' => 'main',
-		'menu_class'     => 'main-menu',
-	));
+wp_nav_menu( array(
+	'theme_location' => 'main',
+	'menu_class'     => 'main-menu',
+) );
 	
-	wp_nav_menu(array(
-		'theme_location' => 'main',
-		'menu_class'     => 'main-menu  nav  list',
-		'wpbem_block'    => 'main-menu',
-	));
+wp_nav_menu( array(
+	'theme_location' => 'main',
+	'menu_class'     => 'main-menu nav list',
+	'wpbem_block'    => 'main-menu',
+) );
+```
 
 This function will fall back to `wp_page_menu()` if `theme_location` is not specified or is non-existent. See the next section for details.
 
 The following class names can be generated – assuming the block name `main-menu` is passed:
 
-	main-menu__item
-	main-menu__item--42 // where 42 is the post's ID
-	main-menu__item--page // where page is the post type
-	main-menu__item--current
-	main-menu__item--parent
-	main-menu__item--ancestor
-	main-menu__item--home
-	main-menu__item--has-children
+```php
+main-menu__item
+main-menu__item--42 // where 42 is the post's ID
+main-menu__item--page // where page is the post type
+main-menu__item--current
+main-menu__item--parent
+main-menu__item--ancestor
+main-menu__item--home
+main-menu__item--has-children
+```
 
 To customise the element (in the above case, 'item'), please use the `wpbem_nav_menu_element` filter.
 
@@ -86,11 +90,13 @@ As with `wp_nav_menu()`, the block name can be specified using either `menu_clas
 
 Assuming a block name of `page-menu`, the following possible class names exist:
 
-	page-menu__item
-	page-menu__item--page-42 // where 42 is the page's ID
-	page-menu__item--depth-0 // where 0 denotes a root node
-	page-menu__item--current
-	page-menu__item--has-children
+```php
+page-menu__item
+page-menu__item--page-42 // where 42 is the page's ID
+page-menu__item--depth-0 // where 0 denotes a root node
+page-menu__item--current
+page-menu__item--has-children
+```
 
 To customise the element (in the above case, 'item'), please use the `wpbem_page_menu_element` filter.
 
@@ -110,13 +116,17 @@ Hopefully in a future release of WordPress the default comment form template wil
 
 There are two configuration options that are available here to modify the block name for the form's container and the form itself. To change them, just use `add_filter()` to override `wpbem_comment_container_block` and `wpbem_comment_form_block`. For example:
 
-	add_filter('wpbem_comment_form_block', function() {
-		return 'new-class-here';
-	});
+```php
+add_filter(`'wpbem_comment_form_block', function() {
+	return 'new-class-here';
+} );
+```
 
 Amending the default WordPress class names was a bit of a hack, so I've made it possible to disable this functionality altogether. Just paste this code into your theme's functions.php file to turn this off if it causes more problems than it solves.
 
-	add_filter('wpbem_amend_comment_form', '__return_false');
+```php
+add_filter( 'wpbem_amend_comment_form', '__return_false' );
+```
 
 I'll welcome any pull requests from developers who fancy implementing a complete rewrite of the comment form markup. I'll do this myself someday otherwise.
 
@@ -134,17 +144,19 @@ The Bem class generates all class names used by this plugin and allows the custo
 
 Code should be placed in your theme's functions.php file.
 
-	// customises the element prefix, default is __ (two underscores)
-	Bem::setElementPrefix($prefix);
+```php
+// customises the element prefix, default is __ (two underscores)
+Bem::setElementPrefix($prefix);
+
+// customises the modifier prefix, default is -- (two hyphens)
+Bem::setModifierPrefix($prefix);
 	
-	// customises the modifier prefix, default is -- (two hyphens)
-	Bem::setModifierPrefix($prefix);
-	
-	// adds an output filter to format blocks
-	// the first parameter can be either block, element or modifier
-	Bem::addFilter('block', function($block) {
-		return strtoupper($block);
-	});
+// adds an output filter to format blocks
+// the first parameter can be either block, element or modifier
+Bem::addFilter( 'block', function($block) {
+	return strtoupper($block);
+} );
+```
 
 ###Hook priorities
 
