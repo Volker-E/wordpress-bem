@@ -16,10 +16,10 @@ If you use (or want to use) BEM notation in your WordPress projects but are put 
 <?php
 	
 // native WP template tag that generates HTML
-wp_nav_menu(array(
+wp_nav_menu( array(
 	'theme_location' => 'header',
 	'menu_class'     => 'main-menu',
-));
+) );
 	
 // before BEM conversion
 <li class="menu-item current-menu-item menu-item-123">Home</li>
@@ -117,7 +117,7 @@ Hopefully in a future release of WordPress the default comment form template wil
 There are two configuration options that are available here to modify the block name for the form's container and the form itself. To change them, just use `add_filter()` to override `wpbem_comment_container_block` and `wpbem_comment_form_block`. For example:
 
 ```php
-add_filter(`'wpbem_comment_form_block', function() {
+add_filter( 'wpbem_comment_form_block', function() {
 	return 'new-class-here';
 } );
 ```
