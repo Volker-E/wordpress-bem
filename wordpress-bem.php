@@ -2,7 +2,7 @@
 
 /*
 Plugin Name: WordPress BEM
-Plugin URI:  http://github.com/decodedigital/wordpress-bem
+Plugin URI:  https://github.com/decodedigital/wordpress-bem
 Description: A plugin that hooks into natively generated WordPress template code and converts class names to block__element--modifier (BEM) notation.
 Version:     0.1
 Author:      Sam Hastings
